@@ -37,15 +37,18 @@
         
         Ext.onReady(function(){
             var app = new FeedViewer.App();
-            
-	    setTimeout(function(){
+            html2canvas.logging = true;
+            setTimeout(function(){
                 html2canvas.Preload(document.documentElement, {
                     complete: function(images) {
                         var queue = html2canvas.Parse(document.documentElement, images);
                         var canvas = html2canvas.Renderer(queue);
+                        canvas.style.position = 'absolute';
+                        canvas.style.left = '0px';
+                        canvas.style.top = '0px';
+                        canvas.style.zIndex = '100000';
                         document.body.appendChild(canvas);
-                    },
-                    logging: true
+                    }
                 });
             }, 3000);
         });
