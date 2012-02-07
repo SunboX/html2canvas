@@ -38,13 +38,15 @@
         Ext.onReady(function(){
             var app = new FeedViewer.App();
             
-            setTimeout(function(){
-                var queue = html2canvas.Parse();
-          
-                console.log(queue);
-                var canvas = html2canvas.Renderer(queue);
-                
-                Ext.get(document.body).insertSibling(canvas);
+	    setTimeout(function(){
+                html2canvas.Preload(document.documentElement, {
+                    complete: function(images) {
+                        var queue = html2canvas.Parse(document.documentElement, images);
+                        var canvas = html2canvas.Renderer(queue);
+                        document.body.appendChild(canvas);
+                    },
+                    logging: true
+                });
             }, 3000);
         });
         
