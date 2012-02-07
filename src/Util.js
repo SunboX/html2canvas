@@ -205,6 +205,24 @@ html2canvas.Util.getCSS = function (el, property) {
 	return result;
 };
 
+// Determine the position of an element within the matched set of elements
+html2canvas.Util.Index = function(el) {
+    return ( el[0] && el[0].parentNode ) ? html2canvas.Util.getAllPrevious(el).length : -1;
+};
+
+html2canvas.Util.getAllPrevious = function(el) {
+	var matched = [],
+		cur = el.previousSibling;
+
+	while(cur && cur.nodeType !== 9 && cur.nodeType !== 1) {
+		if(cur.nodeType === 1 ) {
+			matched.push(cur);
+		}
+		cur = cur.previousSibling;
+	}
+	return matched;
+};
+
 html2canvas.Util.Extend = function (options, defaults) {
     var key;
     for (key in options) {              
@@ -217,14 +235,12 @@ html2canvas.Util.Extend = function (options, defaults) {
 
 html2canvas.Util.Children = function(el) {
     // $(el).contents() !== el.childNodes, Opera / IE have issues with that
-    var children;
     try {
-      children = $(el).contents();
+      return el.childNodes;
     } catch (ex) {
       html2canvas.log("html2canvas.Util.Children failed with exception: " + ex.message);
-      children = [];
+      return [];
     }
-    return children;
 }
 
 })();
