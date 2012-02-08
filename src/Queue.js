@@ -11,6 +11,15 @@ html2canvas.canvasContext = function (width, height) {
     this.height = height;
     //this.zIndex;
     
+    this.fill = function(){
+        this.storage.push(
+        {
+            type: "function",
+            name: "fill",
+            'arguments': arguments            
+        });
+    };
+    
     this.fillRect = function(){
         this.storage.push(
         {
@@ -18,7 +27,51 @@ html2canvas.canvasContext = function (width, height) {
             name: "fillRect",
             'arguments': arguments            
         });
-        
+    };
+    
+    this.beginPath = function(){
+        this.storage.push(
+        {
+            type: "function",
+            name: "beginPath",
+            'arguments': arguments            
+        });
+    };
+    
+    this.closePath = function(){
+        this.storage.push(
+        {
+            type: "function",
+            name: "closePath",
+            'arguments': arguments            
+        });
+    };
+    
+    this.moveTo = function(){
+        this.storage.push(
+        {
+            type: "function",
+            name: "moveTo",
+            'arguments': arguments            
+        });
+    };
+    
+    this.lineTo = function(){
+        this.storage.push(
+        {
+            type: "function",
+            name: "lineTo",
+            'arguments': arguments            
+        });
+    };
+    
+    this.quadraticCurveTo = function(){
+        this.storage.push(
+        {
+            type: "function",
+            name: "quadraticCurveTo",
+            'arguments': arguments            
+        });
     };
     
        

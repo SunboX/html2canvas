@@ -87,7 +87,6 @@ html2canvas.Parse = function (element, images, opts) {
 
 
     function docSize(){
-
         return {
             width: Math.max(
                     Math.max(doc.body.scrollWidth, doc.documentElement.scrollWidth),
@@ -115,7 +114,30 @@ html2canvas.Parse = function (element, images, opts) {
         if (bgcolor !== "transparent"){
             ctx.setVariable("fillStyle", bgcolor);
             ctx.fillRect (x, y, w, h);
-            numDraws+=1;
+            numDraws += 1;
+        }
+    }
+    
+    // Draw a rounded rectangle
+    function renderRectRounded(ctx, x, y, w, h, rtl, rtr, rbr, rbl, bgcolor) {
+        //if(rtl + rtr + rbr + rbl === 0){
+        if(true){ // disable border radius rendering by now
+            renderRect(ctx, x, y, w, h, bgcolor);
+        } else if (bgcolor !== "transparent"){
+            ctx.setVariable("fillStyle", bgcolor);
+            ctx.beginPath();
+            ctx.moveTo(x + rtl, y);
+            ctx.lineTo(x + w - rtr, y);
+            ctx.quadraticCurveTo(x + w, y, x + w, y + rtr);
+            ctx.lineTo(x + w, y + h - rbr);
+            ctx.quadraticCurveTo(x + w, y + h, x + w - rbr, y + h);
+            ctx.lineTo(x + rbl, y + h);
+            ctx.quadraticCurveTo(x, y + h, x, y + h - rbl);
+            ctx.lineTo(x, y + rtl);
+            ctx.quadraticCurveTo(x, y, x + rtl, y);
+            ctx.closePath();
+            ctx.fill();
+            numDraws += 1;
         }
     }
     
@@ -536,31 +558,31 @@ html2canvas.Parse = function (element, images, opts) {
          */     
     
         var x = bounds.left,
-        y = bounds.top,
-        w = bounds.width,
-        h = bounds.height,
-        borderSide,
-        borderData,
-        bx,
-        by,
-        bw,
-        bh,
-        borderBounds,
-        borders = (function(el){
-            var borders = [],
-            sides = ["Top","Right","Bottom","Left"],
-            s;
-        
-            for (s = 0; s < 4; s+=1){
-                borders.push({
-                    width: getCSS(el, 'border' + sides[s] + 'Width', true),
-                    color: getCSS(el, 'border' + sides[s] + 'Color', false)
-                });          
-            }
-          
-            return borders; 
+            y = bounds.top,
+            w = bounds.width,
+            h = bounds.height,
+            borderSide,
+            borderData,
+            bx,
+            by,
+            bw,
+            bh,
+            borderBounds,
+            borders = (function(el){
+                var borders = [],
+                sides = ["Top", "Right", "Bottom", "Left"],
+                s;
             
-        }(el));    
+                for (s = 0; s < 4; s+=1){
+                    borders.push({
+                        width: getCSS(el, 'border' + sides[s] + 'Width', true),
+                        color: getCSS(el, 'border' + sides[s] + 'Color', false)
+                    });          
+                }
+              
+                return borders; 
+                
+            }(el));  
         
         for (borderSide = 0; borderSide < 4; borderSide+=1){
             borderData = borders[borderSide];
@@ -602,13 +624,37 @@ html2canvas.Parse = function (element, images, opts) {
                 if (clip){
                     borderBounds = clipBounds(borderBounds, clip);
                 }
-                   
-                   
-                if (borderBounds.width>0 && borderBounds.height>0){                           
-                    renderRect(ctx, bx, by, borderBounds.width, borderBounds.height, borderData.color);
-                }
                 
-          
+                // dedect border radius
+                var radiusAll = getCSS(el, 'border-radius', true) || 
+                                getCSS(el, '-webkit-border-radius', true) || 
+                                getCSS(el, '-moz-border-radius', true) ||
+                                0;
+                                
+                var borderRadius = {};
+                
+                ['top-left', 'top-right', 'bottom-right', 'bottom-left'].forEach(function(corner){
+                    borderRadius[corner] = getCSS(el, 'border-' + corner + '-radius', true) || 
+                                           getCSS(el, '-webkit-border-' + corner + '-radius', true) || 
+                                           getCSS(el, '-moz-border-' + corner + '-radius', true) ||
+                                           radiusAll;
+                });
+                   
+                // render it
+                if (borderBounds.width > 0 && borderBounds.height > 0){                           
+                    renderRectRounded(
+                        ctx,
+                        bx,
+                        by,
+                        borderBounds.width,
+                        borderBounds.height,
+                        borderRadius['top-left'],
+                        borderRadius['top-right'],
+                        borderRadius['bottom-right'],
+                        borderRadius['bottom-left'],
+                        borderData.color
+                    );
+                }
             }
         }
 
