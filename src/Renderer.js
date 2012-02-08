@@ -122,8 +122,30 @@ html2canvas.Renderer = function(parseQueue, opts){
                             break;
                         case "function":
                             if (renderItem.name === "fillRect") {
-                        
                                 ctx.fillRect(
+                                    renderItem['arguments'][0],
+                                    renderItem['arguments'][1],
+                                    renderItem['arguments'][2],
+                                    renderItem['arguments'][3]
+                                    );
+                            }else if (renderItem.name === "fill") {
+                                ctx.fill();
+                            }else if (renderItem.name === "beginPath") {
+                                ctx.beginPath();
+                            }else if (renderItem.name === "closePath") {
+                                ctx.closePath();
+                            }else if (renderItem.name === "moveTo") {
+                                ctx.moveTo(
+                                    renderItem['arguments'][0],
+                                    renderItem['arguments'][1]
+                                    );
+                            }else if (renderItem.name === "beginPath") {
+                                ctx.lineTo(
+                                    renderItem['arguments'][0],
+                                    renderItem['arguments'][1]
+                                    );
+                            }else if (renderItem.name === "quadraticCurveTo") {
+                                ctx.quadraticCurveTo(
                                     renderItem['arguments'][0],
                                     renderItem['arguments'][1],
                                     renderItem['arguments'][2],
@@ -131,8 +153,11 @@ html2canvas.Renderer = function(parseQueue, opts){
                                     );
                             }else if(renderItem.name === "fillText") {
                                 // console.log(renderItem.arguments[0]);
-                                ctx.fillText(renderItem['arguments'][0],renderItem['arguments'][1],renderItem['arguments'][2]);
-                    
+                                ctx.fillText(
+                                    renderItem['arguments'][0],
+                                    renderItem['arguments'][1],
+                                    renderItem['arguments'][2]
+                                    );
                             }else if(renderItem.name === "drawImage") {
                                 //  console.log(renderItem);
                                 // console.log(renderItem.arguments[0].width);    
