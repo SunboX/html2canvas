@@ -30,27 +30,13 @@ html2canvas.Generate.Gradient = function(src, bounds) {
     canvas.width = bounds.width;
     canvas.height = bounds.height;
     
-
-    function getColors(input) {      
-        var j = -1, 
-        color = '', 
-        chr;
-        
-        while( j++ < input.length ) {
-            chr = input.charAt( j );
-            if (chr === ')') {
-                color += chr;
-                steps.push( color );
-                color = '';
-                while (j++ < input.length && input.charAt( j ) !== ',') {
-                }
-            } else {
-                color += chr;
-            }
-        }
+    function getColors(input) {
+        var colors = input.match(/#[a-fA-F0-9]{3,6}|rgb\s*\(\s*\d{0,3}\s*,\s*\d{0,3}\s*,\s*\d{0,3}\s*\)/g);
+        for(i = 0, len = colors.length; i < len; i+=1)
+            steps.push(colors[i]);
     }
     
-    if ( tmp = src.match(/-webkit-linear-gradient\((.*)\)/) ) {
+    if ( (tmp = src.match(/-webkit-linear-gradient\((.*)\)/)) ) {
         
         position = tmp[1].split( ",", 1 )[0];
         getColors( tmp[1].substr( position.length + 2 ) );
@@ -78,7 +64,7 @@ html2canvas.Generate.Gradient = function(src, bounds) {
             
         }
 
-    } else if (tmp = src.match(/-webkit-gradient\(linear, (\d+)[%]{0,1} (\d+)[%]{0,1}, (\d+)[%]{0,1} (\d+)[%]{0,1}, from\((.*)\), to\((.*)\)\)/)) {
+    } else if (tmp = src.match(/-webkit-gradient\(linear, (\d+)%{0,1} (\d+)%{0,1}, (\d+)%{0,1} (\d+)%{0,1}, from\((.*)\), to\((.*)\)\)/)) {
         
         p0 = (tmp[1] * bounds.width) / 100;
         p1 = (tmp[2] * bounds.height) / 100;
@@ -88,7 +74,7 @@ html2canvas.Generate.Gradient = function(src, bounds) {
         steps.push(tmp[5]);
         steps.push(tmp[6]);
         
-    } else if (tmp = src.match(/-moz-linear-gradient\((\d+)[%]{0,1} (\d+)[%]{0,1}, (.*)\)/)) {
+    } else if (tmp = src.match(/-moz-linear-gradient\((\d+)%{0,1} (\d+)%{0,1}, (.*)\)/)) {
         
         p0 = (tmp[1] * bounds.width) / 100;
         p1 = (tmp[2] * bounds.width) / 100;
@@ -101,7 +87,7 @@ html2canvas.Generate.Gradient = function(src, bounds) {
     }
 
     lingrad = ctx.createLinearGradient( p0, p1, p2, p3 );
-    increment = 1 / (steps.length - 1);
+    increment = 1 / Math.max(steps.length - 1, 1);
     
     for (i = 0, len = steps.length; i < len; i+=1) {
         try {
