@@ -32,8 +32,7 @@ html2canvas.Generate.Gradient = function(src, bounds) {
     
     function getColors(input) {
         var colors = input.match(/#[a-fA-F0-9]{3,6}|rgb\s*\(\s*\d{0,3}\s*,\s*\d{0,3}\s*,\s*\d{0,3}\s*\)/g);
-        var l = colors.length;
-        for(i = 0; i < l; i++)
+        for(i = 0, len = colors.length; i < len; i+=1)
             steps.push(colors[i]);
     }
     
