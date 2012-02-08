@@ -243,10 +243,10 @@ html2canvas.Util.makeArray = function(array) {
     if(array != null) {
         // The window, strings (and functions) also have 'length'
         // Tweaked logic slightly to handle Blackberry 4.7 RegExp issues #6930
-        var type = class2type[toString.call(array)] || 'object';
+        var type = class2type[array.toString()] || 'object';
 
         if(array.length == null || type === 'string' || type === 'function' || type === 'regexp' || array == array.window) {
-            push.call(ret, array);
+            ret.push(array);
         } else {
             var i = ret.length,
                 j = 0;
