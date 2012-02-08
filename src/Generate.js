@@ -30,27 +30,8 @@ html2canvas.Generate.Gradient = function(src, bounds) {
     canvas.width = bounds.width;
     canvas.height = bounds.height;
     
-
-//    function getColors(input) {
-//        var j = -1, 
-//        color = '', 
-//        chr;
-//        
-//        while( j++ < input.length ) {
-//            chr = input.charAt( j );
-//            if (chr === ')') {
-//                color += chr;
-//                steps.push( color );
-//                color = '';
-//                while (j++ < input.length && input.charAt( j ) !== ',') {
-//                }
-//            } else {
-//                color += chr;
-//            }
-//        }
-//    }
     function getColors(input) {
-        var colors = input.match(/#[a-fA-F0-9]{3,6}|rgb\s*\(\s*\d{0,3}\s*,\s*\d{0,3}\s*,\s*\d{0,3}\s*\)/);
+        var colors = input.match(/#[a-fA-F0-9]{3,6}|rgb\s*\(\s*\d{0,3}\s*,\s*\d{0,3}\s*,\s*\d{0,3}\s*\)/g);
         var l = colors.length;
         for(i = 0; i < l; i++)
             steps.push(colors[i]);
@@ -94,7 +75,7 @@ html2canvas.Generate.Gradient = function(src, bounds) {
         steps.push(tmp[5]);
         steps.push(tmp[6]);
         
-    } else if (tmp = src.match(/-moz-linear-gradient\((\d+)[%]{0,1} (\d+)[%]{0,1}, (.*)\)/)) {
+    } else if (tmp = src.match(/-moz-linear-gradient\((\d+)%{0,1} (\d+)%{0,1}, (.*)\)/)) {
         
         p0 = (tmp[1] * bounds.width) / 100;
         p1 = (tmp[2] * bounds.width) / 100;
