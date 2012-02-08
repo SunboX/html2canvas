@@ -62,7 +62,7 @@ html2canvas.Util.Bounds = function getBounds (el) {
 
 var ua = navigator.userAgent.toLowerCase(),
     platform = navigator.platform.toLowerCase(),
-	UA = ua.match(/(opera|ie|firefox|chrome|version)[\s\/:]([\w\d\.]+)?.*?(safari|version[\s\/:]([\w\d\.]+)|$)/) || [null, 'unknown', 0],
+    UA = ua.match(/(opera|ie|firefox|chrome|version)[\s\/:]([\w\d\.]+)?.*?(safari|version[\s\/:]([\w\d\.]+)|$)/) || [null, 'unknown', 0],
 	mode = UA[1] == 'ie' && document.documentMode;
     
 html2canvas.Util.Browser = {
@@ -223,7 +223,7 @@ html2canvas.Util.getAllPrevious = function(el) {
 	return matched;
 };
 
-html2canvas.Util.Extend = function (options, defaults) {
+html2canvas.Util.Extend = function(options, defaults) {
     var key;
     for (key in options) {              
         if (options.hasOwnProperty(key)) {
@@ -233,10 +233,43 @@ html2canvas.Util.Extend = function (options, defaults) {
     return defaults;           
 };
 
+var class2type = {};
+['Boolean', 'Number', 'String', 'Function', 'ArrayvDate', 'RegExp', 'Object'].forEach(function(name){
+    class2type['[object ' + name + ']'] = name.toLowerCase();
+});
+
+html2canvas.Util.makeArray = function(array) {
+    var ret = [];
+    if(array != null) {
+        // The window, strings (and functions) also have 'length'
+        // Tweaked logic slightly to handle Blackberry 4.7 RegExp issues #6930
+        var type = class2type[toString.call(array)] || 'object';
+
+        if(array.length == null || type === 'string' || type === 'function' || type === 'regexp' || array == array.window) {
+            push.call(ret, array);
+        } else {
+            var i = ret.length,
+                j = 0;
+
+            if(typeof array.length === 'number') {
+                for(var l = array.length; j < l; j++) {
+                    ret[i++] = array[j];
+                }
+            } else {
+                while(array[j] !== undefined) {
+                    ret[i++] = array[j++];
+                }
+            }
+            ret.length = i;
+        }
+    }
+    return ret;
+}
+
 html2canvas.Util.Children = function(el) {
     // $(el).contents() !== el.childNodes, Opera / IE have issues with that
     try {
-      return el.childNodes;
+      return el.nodeName && el.nodeName.toLowerCase() === 'iframe' ? el.contentDocument || el.contentWindow.document : html2canvas.Util.makeArray(el.childNodes);
     } catch (ex) {
       html2canvas.log("html2canvas.Util.Children failed with exception: " + ex.message);
       return [];
