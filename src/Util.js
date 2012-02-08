@@ -234,7 +234,7 @@ html2canvas.Util.Extend = function(options, defaults) {
 };
 
 var class2type = {};
-['Boolean', 'Number', 'String', 'Function', 'ArrayvDate', 'RegExp', 'Object'].forEach(function(name){
+['Boolean', 'Number', 'String', 'Function', 'Array', 'Date', 'RegExp', 'Object'].forEach(function(name){
     class2type['[object ' + name + ']'] = name.toLowerCase();
 });
 
