@@ -103,7 +103,7 @@ html2canvas.Preload = function(element, opts){
         script = doc.createElement("script");        
         script.setAttribute("src", scriptUrl);
         script.setAttribute("type", "text/javascript");
-        imgObj.script = script;
+        //imgObj.script = script;
         window.document.body.appendChild(script);
 
     /*
