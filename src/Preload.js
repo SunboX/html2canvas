@@ -95,7 +95,7 @@ html2canvas.Preload = function(element, opts){
             } catch(ex) {}
             script.parentNode.removeChild(script);
             script = null;
-            imgObj.callbackname = undefined;
+            //imgObj.callbackname = undefined;
         };
 
         count += 1;
@@ -301,7 +301,7 @@ html2canvas.Preload = function(element, opts){
     if (options.timeout > 0) {
         timeoutTimer = window.setTimeout(methods.cleanupDOM, options.timeout);
     }
-    var startTime = (new Date()).getTime();
+    
     this.log('html2canvas: Preload starts: finding background-images');
     images.firstRun = true;
 
